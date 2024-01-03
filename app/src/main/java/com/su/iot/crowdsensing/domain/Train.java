@@ -1,46 +1,44 @@
 package com.su.iot.crowdsensing.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Train {
+/**
+ * Represents a train with attributes trainId and collection of train coaches sorted by their coach position.
+ * Value of crowded-ness can be updated for a specific coach.
+ */
+public class Train implements Serializable {
 
-    private final int id;
-    private final List<TrainCoach> trainCoaches;
+  private final int trainId;
+  private final List<TrainCoach> trainCoaches = new ArrayList<>();
 
-    public Train(int id) {
-        this.id = id;
-        this.trainCoaches = new ArrayList<>();
+  public Train(int trainId) {
+    this.trainId = trainId;
+  }
+
+  public void addTrainCoach(TrainCoach trainCoach) {
+    if (containsTrainCoach(trainCoach)) {
+      return;
     }
+    trainCoaches.add(trainCoach);
+    trainCoaches.sort(TrainCoach::compareTo);
+  }
 
-    public int getId() {
-        return this.id;
-    }
+  public void updateCrowdedValue(int index, double crowdedValue) {
+    trainCoaches.get(index).setCrowdedValue(crowdedValue);
+  }
 
-    public void addTrainCoach(TrainCoach trainCoach) {
-        if ( trainCoaches.contains(trainCoach) ) {
-            return;
-        }
-        trainCoaches.add(trainCoach);
-        trainCoaches.sort(TrainCoach::compareTo);
-    }
+  public boolean containsTrainCoach(TrainCoach trainCoach) {
+    return trainCoaches.contains(trainCoach);
+  }
 
-    public void updateCrowdedValue(int index, double crowdedValue) {
-        trainCoaches.get(index).setCrowdedValue(crowdedValue);
-    }
+  public List<TrainCoach> getTrainCoaches() {
+    return Collections.unmodifiableList(trainCoaches);
+  }
 
-    public void removeTrainCoach(TrainCoach trainCoach) {
-        trainCoaches.remove(trainCoach);
-        trainCoaches.sort(TrainCoach::compareTo);
-    }
-
-    public boolean containsTrainCoach(TrainCoach trainCoach) {
-        return trainCoaches.contains(trainCoach);
-    }
-
-    public List<TrainCoach> getTrainCoaches() {
-        return Collections.unmodifiableList(trainCoaches);
-    }
-
+  public int getTrainId() {
+    return trainId;
+  }
 }
