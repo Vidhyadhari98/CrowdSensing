@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.su.iot.crowdsensing.helper.GetPlatformsTask;
+import com.su.iot.crowdsensing.helper.GetStationsTask;
 import com.su.iot.crowdsensing.helper.TaskRunner;
 
 import org.json.JSONObject;
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TaskRunner taskRunner = new TaskRunner();
-        taskRunner.executeAsync(new GetPlatformsTask(), result -> {
+        taskRunner.executeAsync(new GetStationsTask(), result -> {
             try {
                 String[] platforms = new String[result.length()];
                 for (int i = 0; i < result.length(); i++) {
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void switchToSelectPlatformsActivity(String[] items) {
-        Intent moveScreenIntent = new Intent(MainActivity.this, SelectPlatformsActivity.class);
+        Intent moveScreenIntent = new Intent(MainActivity.this, SelectStationsActivity.class);
         moveScreenIntent.putExtra("stations", items);
         startActivity(moveScreenIntent);
     }

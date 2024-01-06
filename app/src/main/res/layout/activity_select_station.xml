@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/small_margin"
             android:layout_marginBottom="@dimen/small_margin"
             android:gravity="center"
-            android:text="@string/platform_header"
+            android:text="@string/station_header"
             android:textSize="@dimen/size"
             android:textColor="@color/black"/>
 
@@ -27,7 +27,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:text="@string/select_platforms_label"
+            android:text="@string/select_station_label"
             android:layout_marginBottom="5dp"
             />
 

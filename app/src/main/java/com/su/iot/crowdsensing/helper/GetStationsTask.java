@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class GetPlatformsTask implements Callable<JSONArray> {
+public class GetStationsTask implements Callable<JSONArray> {
 
     private static final String URL = "https://iot-project-408501.ew.r.appspot.com/platform/";
 

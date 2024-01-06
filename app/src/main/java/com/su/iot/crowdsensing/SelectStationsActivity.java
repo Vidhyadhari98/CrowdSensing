@@ -18,13 +18,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
-public class SelectPlatformsActivity extends AppCompatActivity {
-
+public class SelectStationsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_platform);
+        setContentView(R.layout.activity_select_station);
 
         String[] items = getIntent().getSerializableExtra("stations", String[].class);
 
@@ -38,10 +37,10 @@ public class SelectPlatformsActivity extends AppCompatActivity {
         button.setOnClickListener(v -> loadNextTrainOnPlatformAndSwitch(String.valueOf(dynamicSpinner.getSelectedItem())));
     }
 
-    private void loadNextTrainOnPlatformAndSwitch(String platformName) {
+    private void loadNextTrainOnPlatformAndSwitch(String stationName) {
         TaskRunner taskRunner = new TaskRunner();
 
-        taskRunner.executeAsync(new GetTrainTask(platformName), result -> {
+        taskRunner.executeAsync(new GetTrainTask(stationName), result -> {
             try {
                 JSONObject trainJson = result.getJSONObject("train");
                 JSONArray trainCoachesJson = result.getJSONArray("carriages");
@@ -54,7 +53,7 @@ public class SelectPlatformsActivity extends AppCompatActivity {
                     train.addTrainCoach(trainCoach);
                 }
 
-                switchToPlatformActivity(platformName, train);
+                switchToPlatformActivity(stationName, train);
             } catch (Exception e) {
                 Log.e(getClass().getName(), "Error loading next train platform", e);
             }
@@ -62,8 +61,8 @@ public class SelectPlatformsActivity extends AppCompatActivity {
     }
 
     private void switchToPlatformActivity(String selectedItem, Train train) {
-        Intent intent= new Intent(SelectPlatformsActivity.this, PlatformActivity.class);
-        intent.putExtra("platform", selectedItem);
+        Intent intent= new Intent(SelectStationsActivity.this, StationActivity.class);
+        intent.putExtra("station", selectedItem);
         intent.putExtra("train", train);
         startActivity(intent);
     }
