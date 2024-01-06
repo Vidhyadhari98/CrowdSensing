@@ -16,7 +16,7 @@
       android:layout_marginTop="@dimen/small_margin"
       android:layout_marginBottom="@dimen/small_margin"
       android:gravity="center"
-      android:text="@string/platform_header"
+      android:text="@string/station_header"
       android:textSize="@dimen/size"
       android:textColor="@color/white"/>
 
