@@ -37,14 +37,11 @@ android {
 
 dependencies {
 
-    implementation("org.altbeacon:android-beacon-library:2.19.4")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
-    implementation("org.slf4j:slf4j-api:2.0.7")
-    implementation("com.github.tony19:logback-android:2.0.0")
     implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
 
     testImplementation("junit:junit:4.13.2")
