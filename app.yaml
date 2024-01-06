@@ -1,0 +1,14 @@
+runtime: php81
+
+runtime_config:
+    document_root: iot-project
+
+handlers:
+- url: /.*
+  script: index.php
+
+env_variables:
+    MYSQL_HOST: mysql:unix_socket=/cloudsql/iot-project-408501:europe-west1:localhost
+    MYSQL_DB: iot
+    MYSQL_USER: root
+    MYSQL_PASS:
