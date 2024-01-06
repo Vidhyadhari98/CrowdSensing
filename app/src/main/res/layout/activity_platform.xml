@@ -17,7 +17,7 @@
       android:layout_marginBottom="@dimen/small_margin"
       android:gravity="center"
       android:text="@string/platform_header"
-      android:textSize="@dimen/platform_size"
+      android:textSize="@dimen/size"
       android:textColor="@color/white"/>
 
   </RelativeLayout>

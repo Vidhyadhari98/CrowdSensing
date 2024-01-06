@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">CrowdSensing</string>
     <string name="loading_text"><b>Looking for station</b></string>
+    <string name="select_platforms_label"><b>Select platform</b></string>
     <string name="platform_header"><b>Platform</b></string>
+    <string name="spinner_title"><b>Please select a platform</b></string>
+    <string name="next_button_label"><b>NEXT</b></string>
 </resources>
