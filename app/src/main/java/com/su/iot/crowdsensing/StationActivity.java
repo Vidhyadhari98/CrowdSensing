@@ -14,6 +14,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class StationActivity extends AppCompatActivity {
@@ -35,7 +36,6 @@ public class StationActivity extends AppCompatActivity {
         trainView = findViewById(R.id.trainView);
         trainView.setTrain(train);
 
-
         connect();
     }
 
@@ -55,12 +55,13 @@ public class StationActivity extends AppCompatActivity {
                     Log.d(getClass().getName(), "Message received: " + new String(message.getPayload()));
 
                     JSONObject event = new JSONObject(message.toString());
-                    double crowdedness = 0.00;
-                    if (event.getInt("occupiedSeats") == event.getInt("totalSeats")) {
-                        crowdedness = 1.00;
+                    JSONArray coaches = event.getJSONArray("coaches");
+                    for (int i = 0; i < coaches.length(); i++) {
+                        JSONObject instance = (JSONObject) coaches.get(i);
+                        int index = instance.getInt("position") - 1;
+                        double crowdedness = instance.getDouble("crowdedness");
+                        trainView.getTrain().updateCrowdedValue(index, crowdedness);
                     }
-
-                    trainView.getTrain().updateCrowdedValue(0, crowdedness);
 
                     trainView.invalidate();
                 }
@@ -71,7 +72,7 @@ public class StationActivity extends AppCompatActivity {
                 }
             });
 
-            subscribeToTopic(mqttClient, "carriage/" + trainView.getTrain().getTrainCoaches().get(0).getCoachId());
+            subscribeToTopic(mqttClient, "train/" + trainView.getTrain().getTrainId());
 
         } catch (Exception e) {
             Log.e(getClass().getName(), "Error connecting to MQTT broker: ", e);

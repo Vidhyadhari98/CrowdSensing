@@ -16,9 +16,7 @@ public class PlatformView extends View {
 
   private final Paint platformPaint;
 
-  private Paint borderPaint;
-  private Paint textPaint;
-  private String textToDraw = "PLATFORM";
+  private final Paint borderPaint;
 
 
   public PlatformView(Context c) {
@@ -60,12 +58,11 @@ public class PlatformView extends View {
     // Draw a border around the canvas
     canvas.drawRect(paddingX, paddingY, endX, endY, borderPaint);
 
-    // Calculate text position at the center of the canvas
     float x = getWidth() / 1.8f;
     float y = getHeight() / 2f;
 
     canvas.rotate(-90, x, y);
 
-    canvas.drawText(textToDraw, x, y, platformPaint);
+    canvas.drawText("PLATFORM", x, y, platformPaint);
   }
 }

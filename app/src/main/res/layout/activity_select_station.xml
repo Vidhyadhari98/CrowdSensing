@@ -20,7 +20,8 @@
             android:gravity="center"
             android:text="@string/station_header"
             android:textSize="@dimen/size"
-            android:textColor="@color/black"/>
+            android:textColor="@color/white"
+            android:background="@color/black"/>
 
         <!-- Text Label -->
         <TextView
