@@ -2,6 +2,7 @@ package com.su.iot.crowdsensing.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -12,8 +13,8 @@ import java.util.List;
 
 public class TrainView extends View {
 
-  private final Paint carriagePaint;
-  private final Rect carriageRect;
+  private final Paint coachPaint;
+  private final Rect coachRect;
 
   private Train train;
 
@@ -23,8 +24,8 @@ public class TrainView extends View {
 
   public TrainView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    carriagePaint = new Paint();
-    carriageRect = new Rect();
+    coachPaint = new Paint();
+    coachRect = new Rect();
   }
 
   @Override
@@ -35,39 +36,39 @@ public class TrainView extends View {
     int paddingY = (int) (this.getHeight() * 0.1);
 
     int trainHeight = this.getHeight() - paddingY * 2;
-    int carriagePadding = (int) (trainHeight * 0.05);
+    int coachPadding = (int) (trainHeight * 0.05);
 
     List<TrainCoach> trainCoaches = train.getTrainCoaches();
-    int carriageHeight = trainHeight / trainCoaches.size();
-    int crowdPadding = (int) (carriageHeight * 0.05);
+    int coachHeight = trainHeight / trainCoaches.size();
+    int crowdPadding = (int) (coachHeight * 0.05);
 
     for (TrainCoach trainCoach : trainCoaches) {
-      carriagePaint.setARGB(255, 202, 207, 210);
-      carriageRect.set(
+      coachPaint.setColor(Color.LTGRAY);
+      coachRect.set(
           paddingX,
-          paddingY + (trainCoach.getCoachPosition() - 1) * carriageHeight + carriagePadding / 2,
+          paddingY + (trainCoach.getCoachPosition() - 1) * coachHeight + coachPadding / 2,
           this.getWidth() - paddingX,
-          paddingY + trainCoach.getCoachPosition() * carriageHeight - carriagePadding / 2
+          paddingY + trainCoach.getCoachPosition() * coachHeight - coachPadding / 2
       );
-      canvas.drawRect(carriageRect, carriagePaint);
+      canvas.drawRect(coachRect, coachPaint);
 
       if (trainCoach.getCrowdedValue() <= 0.33) { // train coach is crowded till 33%
-        carriagePaint.setARGB(255, 46, 204, 113);
+        coachPaint.setColor(Color.GREEN);
       } else if (trainCoach.getCrowdedValue() <= 0.67) { // train coach is crowded till 67%
-        carriagePaint.setARGB(255, 243, 156, 18);
+        coachPaint.setColor(Color.YELLOW);
       } else {
-        carriagePaint.setARGB(255, 231, 76, 60);
+        coachPaint.setColor(Color.RED);
       }
 
-      carriageRect.set(
+      coachRect.set(
           paddingX + crowdPadding,
-          paddingY + (trainCoach.getCoachPosition() - 1) * carriageHeight + carriagePadding / 2
+          paddingY + (trainCoach.getCoachPosition() - 1) * coachHeight + coachPadding / 2
               + crowdPadding,
           this.getWidth() - paddingX - crowdPadding,
-          paddingY + trainCoach.getCoachPosition() * carriageHeight - carriagePadding / 2 - crowdPadding
+          paddingY + trainCoach.getCoachPosition() * coachHeight - coachPadding / 2 - crowdPadding
       );
 
-      canvas.drawRect(carriageRect, carriagePaint);
+      canvas.drawRect(coachRect, coachPaint);
     }
   }
 
