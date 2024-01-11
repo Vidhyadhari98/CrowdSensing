@@ -43,7 +43,7 @@ public class SelectStationsActivity extends AppCompatActivity {
         taskRunner.executeAsync(new GetTrainTask(stationName), result -> {
             try {
                 JSONObject trainJson = result.getJSONObject("train");
-                JSONArray trainCoachesJson = result.getJSONArray("carriages");
+                JSONArray trainCoachesJson = result.getJSONArray("coaches");
                 Train train = new Train(trainJson.getInt("id"));
 
                 for (int i = 0; i < trainCoachesJson.length(); i++) {
@@ -55,7 +55,7 @@ public class SelectStationsActivity extends AppCompatActivity {
 
                 switchToPlatformActivity(stationName, train);
             } catch (Exception e) {
-                Log.e(getClass().getName(), "Error loading next train platform", e);
+                Log.e(getClass().getName(), "Error loading next train station", e);
             }
         });
     }

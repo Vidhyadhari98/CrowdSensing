@@ -28,13 +28,13 @@ public class PlatformView extends View {
     platformPaint = new Paint();
 
     platformPaint.setColor(Color.BLACK);
-    platformPaint.setTextSize(60);
+    platformPaint.setTextSize(80);
     platformPaint.setTextAlign(Paint.Align.CENTER);
 
     borderPaint = new Paint();
     borderPaint.setColor(Color.BLACK);
     borderPaint.setStyle(Paint.Style.STROKE);
-    borderPaint.setStrokeWidth(3); // Set border width
+    borderPaint.setStrokeWidth(5); // Set border width
   }
 
   @Override

@@ -13,7 +13,7 @@ import okhttp3.Response;
 
 public class GetStationsTask implements Callable<JSONArray> {
 
-    private static final String URL = "https://iot-project-408501.ew.r.appspot.com/platform/";
+    private static final String URL = "https://iot-project-20240110.ew.r.appspot.com/station/";
 
     @Override
     public JSONArray call() {
@@ -28,7 +28,7 @@ public class GetStationsTask implements Callable<JSONArray> {
             return new JSONArray(result);
 
         } catch (Exception e) {
-            Log.e(getClass().getName(), "Error getting platforms", e);
+            Log.e(getClass().getName(), "Error getting stations", e);
         }
 
         return null;
