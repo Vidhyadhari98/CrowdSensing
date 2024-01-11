@@ -1,25 +1,16 @@
 <?php
-/**
- * @author team
- */
-
-use PDO;
-use PDOException;
-use RuntimeException;
-use TypeError;
 
 class DB
 {
-    private static string $dbConn = 'iot-project-408501:europe-west1:localhost';
-    private static string $dbName = 'iot';
     private static string $dbUser = 'root';
-    private static string $dbPass = '';
+    private static string $dbPass = 'Password@123';
 
     private static bool $open = false;
     private static PDO $connection;
 
     private function __construct()
-    {}
+    {
+    }
 
     public static function open(): void
     {
@@ -28,8 +19,8 @@ class DB
         }
 
         try {
-			$dbConn = 'iot-project-408501:europe-west1:localhost';
-			$dbName = 'iot';
+            $dbConn = 'iot-project-20240110:europe-west1:iot-db-instance';
+            $dbName = 'iot-db';
             $dsn = "mysql:unix_socket=/cloudsql/{$dbConn};dbname={$dbName}";
             self::$connection = new PDO(
                 $dsn,
@@ -46,13 +37,13 @@ class DB
             throw new RuntimeException(
                 sprintf(
                     'Could not connect to the Cloud SQL Database. Check that ' .
-                        'your username and password are correct, that the Cloud SQL ' .
-                        'proxy is running, and that the database exists and is ready ' .
-                        'for use. For more assistance, refer to %s. The PDO error was %s',
+                    'your username and password are correct, that the Cloud SQL ' .
+                    'proxy is running, and that the database exists and is ready ' .
+                    'for use. For more assistance, refer to %s. The PDO error was %s',
                     'https://cloud.google.com/sql/docs/mysql/connect-external-app',
                     $e->getMessage()
                 ),
-                (int) $e->getCode(),
+                (int)$e->getCode(),
                 $e
             );
         }

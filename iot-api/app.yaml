@@ -1,0 +1,19 @@
+runtime: php81
+env: standard
+service: default
+
+runtime_config:
+    document_root: iot-project
+
+handlers:
+- url: /.*
+  script: index.php
+
+env_variables:
+    MYSQL_HOST: mysql:unix_socket=/cloudsql/iot-project-20240110:europe-west1:iot-db-instance
+    MYSQL_DB: iot-db
+    MYSQL_USER: root
+    MYSQL_PASS: Password@123
+
+beta_settings:
+  cloud_sql_instances: iot-db-instance
