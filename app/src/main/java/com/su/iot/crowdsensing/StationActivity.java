@@ -72,7 +72,7 @@ public class StationActivity extends AppCompatActivity {
                 }
             });
 
-            subscribeToTopic(mqttClient, "train/" + trainView.getTrain().getTrainId());
+            subscribeToTopic(mqttClient, "0207/train/" + trainView.getTrain().getTrainId());
 
         } catch (Exception e) {
             Log.e(getClass().getName(), "Error connecting to MQTT broker: ", e);

@@ -11,7 +11,7 @@ import okhttp3.Response;
 
 public class GetTrainTask implements Callable<JSONObject> {
 
-    private static final String URL = "https://iot-project-408501.ew.r.appspot.com/nextTrain/";
+    private static final String URL = "https://iot-project-20240110.ew.r.appspot.com/nextTrain/";
 
     private final String inputParameter;
 
