@@ -1,124 +1,88 @@
 import time
 import json
-import board
-import adafruit_vcnl4010
-import adafruit_tca9548a
+import requests
 import paho.mqtt.client as mqtt
-import sys
 
-############## Commandline argument (coach id) section ##############
+broker = "test.mosquitto.org"
 
-if len(sys.argv) <=1:
-    print("Please provide a coach id as the first argument when running this script. \nExample: 'Scriptname.py, ID'")
-    exit()
-
-if len(sys.argv) >2:
-    print("Too many arguments provided, use just one argument. \nExample: 'Scriptname.py, ID'")
-    exit()
-
-else:
-    print("Script name: ", sys.argv[0])
-    for i in range(1, len(sys.argv)):                                       # Parses argv string from sys.argv[1]
-        print('Argument:', i, 'value:', sys.argv[i])
-        id = sys.argv[i]                                                    # Assigns the last argument found to id (but we make sure we only get two arguments so the index i is fixed as "$
-                                                                            # to do: change id to coachID for clarity?
-
-id=sys.argv[1]                                                              # sys.argv[0] contains filename, sys.argv[1] is the id passed along
-#print("CoachId used: ", id)                                              # Sets the variable id to the first argument passed along from the commandline  to the script
-
-############## hw init section ##############
-
-broker = "test.mosquitto.org"                                              # Test Broker.
-topic = "0207/coach/"+str(id)
-#print("topic: ", topic)
-i2c = board.I2C()                                                           # Init board
+coachData = requests.get(url="https://iot-project-20240110.ew.r.appspot.com/coach").json()
+print(json.dumps(coachData, indent=2))
 
 
-############### Multiplexer section ##################
-sensorlist=list()
-channellist=list()
+trains = dict()
+coaches = dict()
 
-tca = adafruit_tca9548a.TCA9548A(i2c)                                       # Init multiplexer
+for coach in coachData:
+    print(coach)
 
-for channel in range(8):                                                    # Scan the multiplexer for sensors with addresses. Copied form tutorial
-    if tca[channel].try_lock():                                             # Channels are numbered 0-7
-     #print("Channel {}:".format(channel), end="")
-     addresses = tca[channel].scan()
-     print([hex(address) for address in addresses if address != 0x70])
-     for address in addresses:                                           # Selects all detected values (except 112/0x70 which is the multiplexer address)
-            if address !=0x70:
-                sensorlist.append(address)                                  # if address is not multiplexer addrees, append to list containing sensor addresses
-                channellist.append(channel)                                 # if address is not multiplexer addrees, append to list containing channel numbers
-                #print(channellist)
-        #print(sensorlist)
-     tca[channel].unlock()
+    trainId = coach['train_id']
+    if trainId not in trains:
+        trains[trainId] = {
+            'id': trainId,
+            'coaches': []
+        }
 
-totalSeats= len(sensorlist)
-#print("\nTotal no. of detected seats/sensors: ", totalSeats, "\n")
+    trains[trainId]['coaches'].append(coach['id'])
 
-############### Sensor section ##################
-def get_proximity(sensor):
-        proximity = sensor.proximity
-        print('Proximity: {0}'.format(proximity))
-        return proximity
+    coachId = coach['id']
+    coaches[coachId] = {
+        'id': coachId,
+        'position': coach['position'],
+        'train_id': trainId,
+        'crowdedness': 0.0
+    }
+
+def getTrain(id):
+    train = trains[id].copy()
+    coachesId = train['coaches']
+
+    train['coaches'] = []
+
+    for i in coachesId:
+        train['coaches'].append(coaches[i])
+
+    return train
+
+def updateCoach(id, crowdedness):
+    coaches[int(id)]['crowdedness'] = crowdedness
 
 
-############### MQTT section ################## (from lab)
-
-# when connecting to mqtt do this
-def on_connect(client, userdata, flags, rc):
-        if rc==0:
-                print("Connection established. Code: "+str(rc))
-        else:
-                print("Connection failed. Code: " + str(rc))
-
-def on_publish(client, userdata, mid):
-    print("Published: " + str(mid))
-
-def on_disconnect(client, userdata, rc):
-        if rc != 0:
-                print ("Unexpected disonnection. Code: ", str(rc))
-        else:
-                print("Disconnected. Code: " + str(rc))
-
-def on_log(client, userdata, level, buf):                                           # Message is in buf
-    print("MQTT Log: " + str(buf))
-
-# Connect functions for MQTT
+#creating a mqtt client instance
 client = mqtt.Client()
-client.on_connect = on_connect
-client.on_disconnect = on_disconnect
-client.on_publish = on_publish
-client.on_log = on_log
 
-# Connect to MQTT
-print("Attempting to connect to broker " + broker)
-client.connect(broker)                                                      # Broker address, port and keepalive (maximum period in seconds allowed between communications with the broker)
+#connecting to the mqtt broker
+client.connect(broker)
 client.loop_start()
 
-########### Data processing and publishing #############
-while True:
-    sensordata_list=list()
-    for i in range(len(channellist)):
-        number=channellist[i]
-        #print("NUMBER: ", number)
-        sensor_prox = adafruit_vcnl4010.VCNL4010(tca[number])
-        prox_val = get_proximity(sensor_prox)
-        if prox_val <=3100:
-            sensordata_list.append(False)                                   # Populates a list with i elements (index 0 is for first sensor and index 1 is for second sensor and so on)
-        else:
-            sensordata_list.append(True)                                    # Could use values instead of bools and loop over them with a treshhold value to calculate occupiedSeats
-    occupiedSeats = sensordata_list.count(True)
-    availableSeats = totalSeats - occupiedSeats
+def on_connect(client, uderdata, flags, rc):
+    print("Connected")
 
-    carriage_status = {                                                     # Create a dict to contain values
-        "id": id,
-        "occupiedSeats": occupiedSeats,
-        "availableSeats": availableSeats,
-        "totalSeats": totalSeats
-    }
-    carriage_json = json.dumps(carriage_status)                             # Convert dict to json string
-    payload=carriage_json
-    client.publish(topic, str(payload), qos=0)                              # Publish
-    print(payload)
-    time.sleep(1.0)
+client.on_connect = on_connect
+
+def on_message(client, userdata, message):
+    data = str(message.payload.decode("utf-8"))
+    print("Got"+ data)
+    json_object= json.loads(data)
+    coachId = json_object['id']
+    crowdedness = json_object['occupiedSeats'] / json_object['totalSeats']
+    print("calculated crowdedness " +str(crowdedness))
+    updateCoach(coachId, crowdedness)
+
+client.on_message = on_message
+
+#subscribing to the topic
+for id in coaches:
+    print("Subscribing to: " + "0207/coach/"+str(id))
+    client.subscribe("0207/coach/"+str(id), qos = 0)
+
+
+#publsihing the information
+while True:
+    #Converting to json
+    for id in trains:
+        data = getTrain(id)
+        print("train id" + str(data))
+        json_data = json.dumps(data)
+        print("Publish 0207/train/"+str(id)+": " + str(data))
+        client.publish('0207/train/'+str(id), json_data, qos = 0)
+    time.sleep(3)
