@@ -2,7 +2,7 @@
 
 proximity sensing in Crowdsensing 
  
-The goal of the project is to explore and demonstrate the utilization of Bluetooth and sensors for proximity sensing in the commuting sector. 
+The goal of the project is to explore and demonstrate the utilization of sensors for proximity sensing in the commuting sector. 
 The project aims to develop a system that can accurately detect crowdedness in train coaches and provide real-time information to users. 
 
 Implementing proximity sensing for crowd management in crowded commuting environments offers several key benefits. 
